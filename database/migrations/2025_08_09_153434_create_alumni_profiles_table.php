@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('events', function (Blueprint $table) {
+        Schema::create('alumni_profiles', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('description');
-            $table->dateTime('date');
-            $table->string('location');
-            $table->decimal('price', 8, 2)->default(0.00);
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('phone_number')->nullable();
+            $table->text('bio')->nullable();
+            $table->string('profile_photo_path', 2048)->nullable();
+            $table->string('linkedin_url')->nullable();
+            $table->string('github_url')->nullable();
+            $table->string('current_company')->nullable();
+            $table->string('job_title')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('events');
+        Schema::dropIfExists('alumni_profiles');
     }
 };
