@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MpesaController;
+use App\Http\Controllers\SettingsController; // Import the new controller
 use App\Http\Controllers\Admin\AlumniController as AdminAlumniController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
@@ -63,6 +64,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('payments.pay');
 
     Route::post('/payments/mpesa-stk-push', [MpesaController::class, 'stkPush'])->name('mpesa.stk_push');
+
+    // Settings Page
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
+
 
     // Admin Routes
     Route::middleware('checkrole:admin')->prefix('admin')->name('admin.')->group(function () {
