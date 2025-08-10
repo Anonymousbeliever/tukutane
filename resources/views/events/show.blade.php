@@ -28,12 +28,12 @@
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">RSVP & Payment</h3>
                     <p class="mb-4">To confirm your attendance, please make the payment for this event.</p>
 
-                    <a href="{{ route('payments.pay', $event) }}" class="inline-flex items-center px-6 py-3 bg-tukutane-red border border-transparent rounded-md font-semibold text-sm text-white uppercase tracking-widest hover:bg-red-700 focus:bg-red-700 active:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    <a href="{{ route('payments.pay', $event) }}" class="inline-flex items-center px-6 py-3 bg-tukutane-red border border-transparent rounded-md font-semibold text-sm text-white uppercase tracking-widest hover:bg-tukutane-red-light focus:bg-tukutane-red-light active:bg-tukutane-red focus:outline-none focus:ring-2 focus:ring-tukutane-red focus:ring-offset-2 transition ease-in-out duration-150">
                         Pay for Event (Ksh {{ number_format($event->price, 2) }})
                     </a>
 
                     <div class="mt-6">
-                        <a href="{{ route('events.index') }}" class="text-tukutane-red hover:text-red-700 text-sm font-medium">
+                        <a href="{{ route('events.index') }}" class="text-tukutane-red hover:text-tukutane-red-light text-sm font-medium">
                             &larr; Back to Events
                         </a>
                     </div>
