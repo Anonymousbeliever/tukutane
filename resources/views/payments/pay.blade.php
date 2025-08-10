@@ -35,7 +35,7 @@
                         </div>
 
                         <div class="flex items-center justify-end mt-4">
-                            <x-primary-button class="ms-4 bg-tukutane-red hover:bg-red-700">
+                            <x-primary-button class="ms-4 bg-tukutane-red hover:bg-tukutane-red-light">
                                 {{ __('Pay with M-Pesa') }}
                             </x-primary-button>
                         </div>
