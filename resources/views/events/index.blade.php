@@ -1,35 +1,37 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-2xl text-gray-800 leading-tight">
             {{ __('Upcoming Events') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    @forelse ($events as $event)
-                        <div class="mb-6 p-4 border-b border-gray-200 last:border-b-0">
-                            <h3 class="text-xl font-semibold text-gray-800">{{ $event->title }}</h3>
-                            <p class="text-gray-600 text-sm mt-1">
-                                <span class="font-medium">{{ $event->date->format('F d, Y H:i A') }}</span> at {{ $event->location }}
-                            </p>
-                            <p class="text-gray-700 mt-2">{{ Str::limit($event->description, 150) }}</p>
-                            <div class="mt-3 flex items-center justify-between">
-                                <span class="text-lg font-bold text-tukutane-red">Ksh {{ number_format($event->price, 2) }}</span>
-                                <a href="{{ route('events.show', $event) }}" class="inline-flex items-center px-4 py-2 bg-tukutane-red border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 focus:bg-red-700 active:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                    View Details & RSVP
-                                </a>
-                            </div>
+            <div class="bg-white overflow-hidden shadow-lg sm:rounded-lg p-6">
+                @forelse ($events as $event)
+                    <div class="mb-8 p-6 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 ease-in-out">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">{{ $event->title }}</h3>
+                        <p class="text-gray-600 text-md mb-3">
+                            <span class="font-medium">{{ $event->date->format('F d, Y H:i A') }}</span> at <span class="font-semibold">{{ $event->location }}</span>
+                        </p>
+                        <p class="text-gray-700 leading-relaxed mb-4">{{ Str::limit($event->description, 200) }}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xl font-bold text-tukutane-teal">Ksh {{ number_format($event->price, 2) }}</span>
+                            <a href="{{ route('events.show', $event) }}" class="inline-flex items-center px-6 py-3 bg-tukutane-teal border border-transparent rounded-md font-semibold text-sm text-white uppercase tracking-widest hover:bg-teal-700 focus:bg-teal-700 active:bg-teal-900 focus:outline-none focus:ring-2 focus:ring-tukutane-teal focus:ring-offset-2 transition-all duration-200 ease-in-out shadow-md">
+                                View Details & RSVP
+                                <svg class="ml-2 -mr-0.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                            </a>
                         </div>
-                    @empty
-                        <p class="text-gray-600">No upcoming events found.</p>
-                    @endforelse
-
-                    <div class="mt-6">
-                        {{ $events->links() }}
                     </div>
+                @empty
+                    <div class="p-6 text-center text-gray-600">
+                        <p class="text-lg">No upcoming events found at the moment.</p>
+                        <p class="mt-2">Check back later for new exciting events!</p>
+                    </div>
+                @endforelse
+
+                <div class="mt-8">
+                    {{ $events->links() }}
                 </div>
             </div>
         </div>

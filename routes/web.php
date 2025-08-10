@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Models\Event;
 use App\Models\Payment;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +22,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    if (Auth::check()) {
+        if (Auth::user()->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect()->route('dashboard');
+    }
     return view('welcome');
 });
 
@@ -68,7 +75,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('alumni/{user}/edit', [AdminAlumniController::class, 'edit'])->name('alumni.edit');
         Route::patch('alumni/{user}', [AdminAlumniController::class, 'update'])->name('alumni.update');
         Route::delete('alumni/{user}', [AdminAlumniController::class, 'destroy'])->name('alumni.destroy');
-
 
         // Event Management
         Route::resource('events', AdminEventController::class);

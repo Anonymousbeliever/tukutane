@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Define CSS variables for your colors for easier use in components */
+:root {
+  --color-tukutane-teal: #008080;
+  --color-tukutane-teal-light: #00a0a0; /* Slightly lighter for hover effects */
+  --color-tukutane-white: #ffffff;
+}

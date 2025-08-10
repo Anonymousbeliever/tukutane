@@ -8,7 +8,8 @@ module.exports = {
     "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
     "./storage/framework/views/*.php",
     "./resources/views/**/*.blade.php",
-    "./resources/js/**/*.vue", // If you use Vue components with Breeze
+    "./resources/js/**/*.js",
+    "*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     ...defaultConfig.theme,
@@ -16,15 +17,20 @@ module.exports = {
       ...defaultConfig.theme.extend,
       colors: {
         ...defaultConfig.theme.extend.colors,
-        "tukutane-red": "#E3342F",
-        "tukutane-white": "#FFFFFF",
+        "tukutane-teal": "#008080", // Your primary accent color
+        "tukutane-white": "#FFFFFF", // Your secondary color
+        "tukutane-teal-light": "#00a0a0", // A lighter shade of teal for hover/active states
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        ...defaultConfig.theme.extend.borderRadius,
+        lg: "0.5rem", // Standard large border radius
+        md: "0.375rem", // Standard medium border radius
+        sm: "0.25rem", // Standard small border radius
+      },
+      fontFamily: {
+        sans: ["Figtree", "sans-serif"],
       },
     },
   },
-  plugins: [...defaultConfig.plugins, require("@tailwindcss/forms"), require("tailwindcss-animate")],
+  plugins: [...defaultConfig.plugins, require("@tailwindcss/forms"), require("@tailwindcss/typography")],
 }
