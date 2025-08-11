@@ -15,14 +15,14 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased bg-gray-100">
-        <div class="flex min-h-screen">
+        <div class="app-layout-container">
             {{-- Sidebar --}}
             @auth
                 @include('layouts.sidebar')
             @endauth
 
             {{-- Main Content Area --}}
-            <div id="main-content" class="flex-1 flex flex-col transition-all duration-300 ease-in-out md:ml-64">
+            <div id="main-content" class="main-content-area">
                 {{-- Header/Navigation Bar --}}
                 @include('layouts.navigation')
 

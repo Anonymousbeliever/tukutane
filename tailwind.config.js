@@ -1,25 +1,38 @@
 /** @type {import('tailwindcss').Config} */
-const defaultConfig = require("shadcn/ui/tailwind.config")
-
 module.exports = {
-  ...defaultConfig,
+  darkMode: ["class"],
+  safelist: [
+    // Sidebar animations
+    "translate-x-0",
+    "-translate-x-full",
+    "ml-0",
+    "md:ml-64",
+    "hidden",
+  ],
   content: [
-    ...defaultConfig.content,
+    "./resources/views/**/*.blade.php",
+    "./resources/**/*.{js,jsx,ts,tsx,vue}",
     "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
     "./storage/framework/views/*.php",
-    "./resources/views/**/*.blade.php",
-    "./resources/js/**/*.js",
-    "*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    ...defaultConfig.theme,
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
     extend: {
-      ...defaultConfig.theme.extend,
       colors: {
-        "tukutane-red": "#DC2626", // Your primary accent color (a strong red)
-        "tukutane-red-light": "#EF4444", // A lighter shade for hover/active
-        "tukutane-white": "#FFFFFF", // Your secondary color
-        // Re-mapping primary/accent to use your red for consistency with shadcn/ui concepts
+        "tukutane-red": "#DC2626",
+        "tukutane-red-light": "#EF4444",
+        "tukutane-white": "#FFFFFF",
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "var(--color-tukutane-red)",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         primary: {
           DEFAULT: "var(--color-tukutane-red)",
           foreground: "var(--color-tukutane-white)",
@@ -37,7 +50,7 @@ module.exports = {
           foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "var(--color-tukutane-red-light)", // A lighter shade for hover/active
+          DEFAULT: "var(--color-tukutane-red-light)",
           foreground: "var(--color-tukutane-white)",
         },
         popover: {
@@ -48,22 +61,34 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        border: "hsl(var(--border))", // Default border color
-        input: "hsl(var(--input))", // Default input border
-        ring: "var(--color-tukutane-red)", // Focus ring
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
       },
       borderRadius: {
-        ...defaultConfig.theme.extend.borderRadius,
-        lg: "0.5rem", // Standard large border radius
-        md: "0.375rem", // Standard medium border radius
-        sm: "0.25rem", // Standard small border radius
+        lg: "0.5rem",
+        md: "0.375rem",
+        sm: "0.25rem",
       },
       fontFamily: {
         sans: ["Figtree", "sans-serif"],
       },
+      keyframes: {
+        "accordion-down": {
+          from: { height: 0 },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: 0 },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+      },
     },
   },
-  plugins: [...defaultConfig.plugins, require("@tailwindcss/forms"), require("@tailwindcss/typography")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("@tailwindcss/forms"),
+    require("@tailwindcss/typography"),
+  ],
 }

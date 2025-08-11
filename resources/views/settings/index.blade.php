@@ -7,18 +7,18 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
-            <div class="p-6 bg-white shadow-lg sm:rounded-lg">
+            <div class="p-6 bg-white shadow-lg sm-rounded-lg">
                 <div class="max-w-xl">
                     <h3 class="text-xl font-semibold text-gray-900 mb-4">General Settings</h3>
                     <p class="text-gray-700 mb-6">Manage your application preferences here.</p>
 
-                    <form method="POST" action="{{ route('settings.update') }}" class="space-y-6">
+                    <form method="POST" action="{{ route('settings.update') }}" class="mt-6 space-y-6">
                         @csrf
                         @method('patch')
 
                         <div>
                             <x-input-label for="notification_preference" :value="__('Notification Preference')" />
-                            <select id="notification_preference" name="notification_preference" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-tukutane-red focus:ring-tukutane-red transition-all duration-200 ease-in-out">
+                            <select id="notification_preference" name="notification_preference" class="mt-1 block w-full form-input">
                                 <option value="all">All Notifications</option>
                                 <option value="important">Important Only</option>
                                 <option value="none">None</option>
@@ -26,17 +26,17 @@
                             <x-input-error :messages="$errors->get('notification_preference')" class="mt-2" />
                         </div>
 
-                        <div>
+                        <div class="mt-4">
                             <x-input-label for="theme_preference" :value="__('Theme Preference')" />
-                            <select id="theme_preference" name="theme_preference" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-tukutane-red focus:ring-tukutane-red transition-all duration-200 ease-in-out">
+                            <select id="theme_preference" name="theme_preference" class="mt-1 block w-full form-input">
                                 <option value="light">Light</option>
                                 <option value="dark">Dark</option>
                             </select>
                             <x-input-error :messages="$errors->get('theme_preference')" class="mt-2" />
                         </div>
 
-                        <div class="flex items-center gap-4">
-                            <x-primary-button class="bg-tukutane-red hover:bg-tukutane-red-light">
+                        <div class="flex-center gap-4">
+                            <x-primary-button class="btn btn-primary">
                                 {{ __('Save Settings') }}
                             </x-primary-button>
                         </div>
@@ -45,7 +45,7 @@
             </div>
 
             {{-- You can add more settings sections here --}}
-            <div class="p-6 bg-white shadow-lg sm:rounded-lg">
+            <div class="p-6 bg-white shadow-lg sm-rounded-lg">
                 <div class="max-w-xl">
                     <h3 class="text-xl font-semibold text-gray-900 mb-4">Privacy Settings</h3>
                     <p class="text-gray-700 mb-6">Control your data and privacy options.</p>

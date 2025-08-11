@@ -7,31 +7,31 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-sm sm-rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">M-Pesa Receipt</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th>ID</th>
+                                    <th>User</th>
+                                    <th>Event</th>
+                                    <th>Amount</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>M-Pesa Receipt</th>
+                                    <th>Date</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tbody>
                                 @forelse ($payments as $payment)
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $payment->id }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $payment->user->name }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $payment->event->title ?? 'N/A (Donation)' }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">Ksh {{ number_format($payment->amount, 2) }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ ucfirst($payment->type) }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
+                                        <td>{{ $payment->id }}</td>
+                                        <td>{{ $payment->user->name }}</td>
+                                        <td>{{ $payment->event->title ?? 'N/A (Donation)' }}</td>
+                                        <td>Ksh {{ number_format($payment->amount, 2) }}</td>
+                                        <td>{{ ucfirst($payment->type) }}</td>
+                                        <td>
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                                                 @if($payment->status === 'completed') bg-green-100 text-green-800
                                                 @elseif($payment->status === 'pending') bg-yellow-100 text-yellow-800
@@ -39,19 +39,19 @@
                                                 {{ ucfirst($payment->status) }}
                                             </span>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $payment->mpesaTransaction->mpesa_receipt_number ?? 'N/A' }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $payment->created_at->format('Y-m-d H:i') }}</td>
+                                        <td>{{ $payment->mpesaTransaction->mpesa_receipt_number ?? 'N/A' }}</td>
+                                        <td>{{ $payment->created_at->format('Y-m-d H:i') }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="px-6 py-4 whitespace-nowrap text-center text-gray-500">No payments found.</td>
+                                        <td colspan="8" class="text-center text-gray-500">No payments found.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
 
-                    <div class="mt-6">
+                    <div class="mt-6 pagination-links">
                         {{ $payments->links() }}
                     </div>
                 </div>

@@ -17,7 +17,7 @@
     <body class="font-sans antialiased bg-gray-100">
         {{-- This div is for Breeze's default auth pages (login, register, etc.) --}}
         {{-- The welcome.blade.php will take over the full page content --}}
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
+        <div class="min-h-screen flex-col flex-center pt-6 sm:pt-0 bg-gray-100">
             {{ $slot }}
         </div>
     </body>

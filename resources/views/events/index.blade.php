@@ -7,7 +7,7 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-lg sm:rounded-lg p-6">
+            <div class="bg-white overflow-hidden shadow-lg sm-rounded-lg p-6">
                 @forelse ($events as $event)
                     <div class="mb-8 p-6 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 ease-in-out">
                         <h3 class="text-2xl font-bold text-gray-900 mb-2">{{ $event->title }}</h3>
@@ -15,9 +15,9 @@
                             <span class="font-medium">{{ $event->date->format('F d, Y H:i A') }}</span> at <span class="font-semibold">{{ $event->location }}</span>
                         </p>
                         <p class="text-gray-700 leading-relaxed mb-4">{{ Str::limit($event->description, 200) }}</p>
-                        <div class="flex items-center justify-between">
-                            <span class="text-xl font-bold text-tukutane-red">Ksh {{ number_format($event->price, 2) }}</span>
-                            <a href="{{ route('events.show', $event) }}" class="inline-flex items-center px-6 py-3 bg-tukutane-red border border-transparent rounded-md font-semibold text-sm text-white uppercase tracking-widest hover:bg-tukutane-red-light focus:bg-tukutane-red-light active:bg-tukutane-red focus:outline-none focus:ring-2 focus:ring-tukutane-red focus:ring-offset-2 transition-all duration-200 ease-in-out shadow-md">
+                        <div class="flex-between">
+                            <span class="text-xl font-bold text-primary-red">Ksh {{ number_format($event->price, 2) }}</span>
+                            <a href="{{ route('events.show', $event) }}" class="btn btn-primary px-6 py-3 text-sm shadow-md">
                                 View Details & RSVP
                                 <svg class="ml-2 -mr-0.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                             </a>
@@ -30,7 +30,7 @@
                     </div>
                 @endforelse
 
-                <div class="mt-8">
+                <div class="mt-8 pagination-links">
                     {{ $events->links() }}
                 </div>
             </div>

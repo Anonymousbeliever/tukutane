@@ -7,51 +7,51 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-sm sm-rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-end mb-4">
-                        <a href="{{ route('admin.events.create') }}" class="inline-flex items-center px-4 py-2 bg-tukutane-red border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-tukutane-red-light focus:bg-tukutane-red-light active:bg-tukutane-red focus:outline-none focus:ring-2 focus:ring-tukutane-red focus:ring-offset-2 transition ease-in-out duration-150">
+                        <a href="{{ route('admin.events.create') }}" class="btn btn-primary px-4 py-2 text-xs">
                             Add New Event
                         </a>
                     </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    <th>Title</th>
+                                    <th>Date</th>
+                                    <th>Location</th>
+                                    <th>Price</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tbody>
                                 @forelse ($events as $event)
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $event->title }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $event->date->format('F d, Y H:i A') }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $event->location }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">Ksh {{ number_format($event->price, 2) }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <a href="{{ route('admin.events.edit', $event) }}" class="text-tukutane-red hover:text-tukutane-red-light mr-3">Edit</a>
+                                        <td>{{ $event->title }}</td>
+                                        <td>{{ $event->date->format('F d, Y H:i A') }}</td>
+                                        <td>{{ $event->location }}</td>
+                                        <td>Ksh {{ number_format($event->price, 2) }}</td>
+                                        <td>
+                                            <a href="{{ route('admin.events.edit', $event) }}" class="text-primary-red hover:text-primary-red-light mr-3 transition-colors duration-200">Edit</a>
                                             <form action="{{ route('admin.events.destroy', $event) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this event?');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-800">Delete</button>
+                                                <button type="submit" class="text-red-600 hover:text-red-800 transition-colors duration-200">Delete</button>
                                             </form>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-6 py-4 whitespace-nowrap text-center text-gray-500">No events found.</td>
+                                        <td colspan="5" class="text-center text-gray-500">No events found.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
 
-                    <div class="mt-6">
+                    <div class="mt-6 pagination-links">
                         {{ $events->links() }}
                     </div>
                 </div>
