@@ -17,7 +17,7 @@ class MpesaController extends Controller
     {
         $request->validate([
             'amount' => 'required|numeric|min:1',
-            'phone_number' => 'required|string|regex:/^2547[0-9]{8}$/', // Kenyan Safaricom numbers
+            'phone_number' => 'required|string|min:10', // More flexible for demo
             'payment_id' => 'required|exists:payments,id',
         ]);
 
@@ -25,28 +25,37 @@ class MpesaController extends Controller
         $phone = $request->phone_number;
         $paymentId = $request->payment_id;
 
+        // Ensure phone number is in correct format for demo
+        if (!str_starts_with($phone, '254')) {
+            // Convert 07XXXXXXXX to 2547XXXXXXXX
+            if (str_starts_with($phone, '0')) {
+                $phone = '254' . substr($phone, 1);
+            }
+        }
+
         $timestamp = now()->format('YmdHis');
-        $password = base64_encode(config('services.mpesa.shortcode') . config('services.mpesa.passkey') . $timestamp);
+        $password = base64_encode(env('MPESA_SHORTCODE') . env('MPESA_PASSKEY') . $timestamp);
 
         try {
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer ' . $this->generateAccessToken(),
             ])->post('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', [
-                'BusinessShortCode' => config('services.mpesa.shortcode'),
+                'BusinessShortCode' => env('MPESA_SHORTCODE'),
                 'Password' => $password,
                 'Timestamp' => $timestamp,
                 'TransactionType' => 'CustomerPayBillOnline',
                 'Amount' => $amount,
                 'PartyA' => $phone,
-                'PartyB' => config('services.mpesa.shortcode'),
+                'PartyB' => env('MPESA_SHORTCODE'),
                 'PhoneNumber' => $phone,
-                'CallBackURL' => config('services.mpesa.callback_url'),
+                'CallBackURL' => env('MPESA_CALLBACK_URL'),
                 'AccountReference' => 'TukutanePayment-' . $paymentId,
                 'TransactionDesc' => 'Payment for Tukutane',
             ]);
 
             $responseData = $response->json();
+            Log::info('M-Pesa STK Push Response:', $responseData);
 
             if ($response->successful() && isset($responseData['CheckoutRequestID'])) {
                 MpesaTransaction::create([
@@ -61,10 +70,12 @@ class MpesaController extends Controller
                 // Update payment status to pending
                 Payment::find($paymentId)->update(['status' => 'pending']);
 
-                return back()->with('success', 'M-Pesa STK Push initiated. Please check your phone to complete the payment.');
+                return redirect()->route('payment.status', $paymentId)
+                    ->with('success', 'M-Pesa STK Push initiated. Please check your phone to complete the payment.');
             } else {
                 Log::error('M-Pesa STK Push Error: ' . json_encode($responseData));
-                return back()->with('error', 'Failed to initiate M-Pesa STK Push: ' . ($responseData['errorMessage'] ?? 'Unknown error.'));
+                $errorMessage = $responseData['errorMessage'] ?? $responseData['ResponseDescription'] ?? 'Unknown error.';
+                return back()->with('error', 'Failed to initiate M-Pesa STK Push: ' . $errorMessage);
             }
         } catch (\Exception $e) {
             Log::error('M-Pesa STK Push Exception: ' . $e->getMessage());
@@ -117,7 +128,15 @@ class MpesaController extends Controller
             Log::warning('M-Pesa Callback: No matching transaction found for CheckoutRequestID: ' . $checkoutRequestID);
         }
 
-        return response()->json(['ResultCode' => 0, 'ResultDesc' => 'C2B Callback received successfully']);
+        return response()->json(['ResultCode' => 0, 'ResultDesc' => 'Callback processed successfully']);
+    }
+
+    /**
+     * Show payment status (for demo purposes)
+     */
+    public function paymentStatus(Payment $payment)
+    {
+        return view('payments.status', compact('payment'));
     }
 
     /**
@@ -125,14 +144,19 @@ class MpesaController extends Controller
      */
     private function generateAccessToken()
     {
-        $consumerKey = config('services.mpesa.consumer_key');
-        $consumerSecret = config('services.mpesa.consumer_secret');
+        $consumerKey = env('MPESA_CONSUMER_KEY');
+        $consumerSecret = env('MPESA_CONSUMER_SECRET');
         $credentials = base64_encode($consumerKey . ':' . $consumerSecret);
 
         $response = Http::withHeaders([
             'Authorization' => 'Basic ' . $credentials,
         ])->get('https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials');
 
-        return $response->json()['access_token'];
+        if ($response->successful()) {
+            return $response->json()['access_token'];
+        }
+
+        Log::error('Failed to generate M-Pesa access token:', $response->json());
+        throw new \Exception('Failed to generate M-Pesa access token');
     }
 }
