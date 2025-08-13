@@ -14,9 +14,23 @@ class AlumniController extends Controller
     /**
      * Display a listing of the alumni.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $alumni = User::where('role', 'alumnus')->with('alumniProfile')->paginate(10);
+        $query = User::where('role', 'alumnus')->with('alumniProfile');
+        
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhereHas('alumniProfile', function($profile) use ($search) {
+                      $profile->where('current_company', 'like', "%{$search}%")
+                              ->orWhere('job_title', 'like', "%{$search}%");
+                  });
+            });
+        }
+        
+        $alumni = $query->orderBy('created_at', 'desc')->paginate(10);
         return view('admin.alumni.index', compact('alumni'));
     }
 
@@ -82,6 +96,11 @@ class AlumniController extends Controller
         if ($user->role !== 'alumnus') {
             abort(404);
         }
+        
+        if ($user->alumniProfile && $user->alumniProfile->profile_photo_path) {
+            Storage::disk('public')->delete($user->alumniProfile->profile_photo_path);
+        }
+        
         $user->delete();
         return redirect()->route('admin.alumni.index')->with('success', 'Alumni deleted successfully.');
     }

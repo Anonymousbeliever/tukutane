@@ -11,10 +11,14 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        {{-- Added Alpine.js for dropdown functionality --}}
+        <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
         {{-- Scripts & Styles --}}
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased bg-gray-100">
+    <body class="font-sans antialiased bg-gray-100 {{ Auth::check() ? Auth::user()->getThemeClass() : 'theme-light' }}" 
+          data-theme="{{ Auth::check() ? Auth::user()->theme_preference : 'light' }}">
         <div class="app-layout-container">
             {{-- Sidebar --}}
             @auth
@@ -28,15 +32,15 @@
 
                 {{-- Page Heading --}}
                 @if (isset($header))
-                    <header class="bg-white shadow-sm py-4 px-6 border-b border-gray-200">
+                    <header class="bg-white shadow-sm py-3 sm:py-4 px-4 sm:px-6 border-b border-gray-200">
                         <div class="max-w-7xl mx-auto">
                             {{ $header }}
                         </div>
                     </header>
                 @endif
 
-                {{-- Page Content --}}
-                <main class="flex-1 p-4 sm:p-6 lg:p-8">
+                {{-- Improved main content padding and responsiveness --}}
+                <main class="flex-1 p-3 sm:p-4 lg:p-6 xl:p-8">
                     @if (session('success'))
                         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative mb-4 transition-all duration-300 ease-in-out" role="alert">
                             <strong class="font-bold">Success!</strong>
@@ -53,5 +57,34 @@
                 </main>
             </div>
         </div>
+
+        {{-- Theme switching JavaScript --}}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const body = document.body;
+                const themePreference = body.getAttribute('data-theme');
+                
+                function applyTheme(theme) {
+                    body.classList.remove('theme-light', 'theme-dark');
+                    
+                    if (theme === 'auto') {
+                        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                        body.classList.add(prefersDark ? 'theme-dark' : 'theme-light');
+                    } else {
+                        body.classList.add(`theme-${theme}`);
+                    }
+                }
+                
+                // Apply initial theme
+                applyTheme(themePreference);
+                
+                // Listen for system theme changes when auto is selected
+                if (themePreference === 'auto') {
+                    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                        applyTheme('auto');
+                    });
+                }
+            });
+        </script>
     </body>
 </html>

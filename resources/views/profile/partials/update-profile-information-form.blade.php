@@ -17,15 +17,34 @@
         @csrf
         @method('patch')
 
-        {{-- Profile Photo --}}
+        {{-- Enhanced profile photo section with better preview and styling --}}
         <div>
             <x-input-label for="profile_photo" :value="__('Profile Photo')" />
-            @if ($user->alumniProfile && $user->alumniProfile->profile_photo_path)
-                <div class="mt-2">
-                    <img src="{{ Storage::url($user->alumniProfile->profile_photo_path) }}" alt="Profile Photo" class="profile-photo-preview">
+            @if ($user->alumniProfile && $user->alumniProfile->hasProfilePhoto())
+                <div class="mt-2 flex items-center space-x-4">
+                    <img src="{{ $user->alumniProfile->profile_photo_url }}" 
+                         alt="Current Profile Photo" 
+                         class="profile-photo-preview rounded-full w-24 h-24">
+                    <div>
+                        <p class="text-sm text-gray-600">Current photo</p>
+                        <p class="text-xs text-gray-500">Upload a new photo to replace this one</p>
+                    </div>
+                </div>
+            @else
+                <div class="mt-2 flex items-center space-x-4">
+                    <div class="w-24 h-24 rounded-full bg-gray-200 flex-center border-2 border-dashed border-gray-300">
+                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">No profile photo</p>
+                        <p class="text-xs text-gray-500">Upload a photo to personalize your profile</p>
+                    </div>
                 </div>
             @endif
-            <input id="profile_photo" name="profile_photo" type="file" class="mt-1 block w-full form-file-input" />
+            <input id="profile_photo" name="profile_photo" type="file" class="mt-3 block w-full form-file-input" accept="image/*" />
+            <p class="mt-1 text-xs text-gray-500">JPG, PNG, GIF up to 2MB</p>
             <x-input-error class="mt-2" :messages="$errors->get('profile_photo')" />
         </div>
 

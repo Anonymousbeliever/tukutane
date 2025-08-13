@@ -23,33 +23,62 @@
            <span class="sr-only">Notifications</span>
        </button>
 
-       {{-- User Profile Dropdown --}}
+       {{-- Fixed user profile dropdown with proper Alpine.js syntax and profile photo --}}
        <div class="dropdown" x-data="{ open: false }" @click.outside="open = false">
-           <button @click="open = ! open" class="dropdown-trigger-button">
-               <div>{{ Auth::user()->name }}</div>
+           <button @click="open = !open" class="dropdown-trigger-button">
+               {{-- Fixed profile photo display --}}
+               @if(Auth::user()->alumniProfile && Auth::user()->alumniProfile->hasProfilePhoto())
+                   <img src="{{ Auth::user()->alumniProfile->profile_photo_url }}" 
+                        alt="{{ Auth::user()->name }}" 
+                        class="w-8 h-8 rounded-full object-cover mr-2 border-2 border-gray-200">
+               @else
+                   <div class="w-8 h-8 rounded-full bg-primary-red text-white-color flex-center mr-2 text-sm font-semibold border-2 border-gray-200">
+                       {{ substr(Auth::user()->name, 0, 1) }}
+                   </div>
+               @endif
+               <div class="hidden sm:block">{{ Auth::user()->name }}</div>
                <div class="ml-2">
-                   <svg class="fill-current h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                   <svg class="fill-current h-5 w-5 transition-transform duration-200" 
+                        :class="{ 'rotate-180': open }"
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                    </svg>
                </div>
            </button>
 
-           <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="dropdown-content" style="display: none;">
+           {{-- Fixed dropdown content with proper Alpine.js transitions --}}
+           <div x-show="open" 
+                x-transition:enter="transition ease-out duration-200" 
+                x-transition:enter-start="opacity-0 scale-95" 
+                x-transition:enter-end="opacity-100 scale-100" 
+                x-transition:leave="transition ease-in duration-75" 
+                x-transition:leave-start="opacity-100 scale-100" 
+                x-transition:leave-end="opacity-0 scale-95" 
+                class="dropdown-content"
+                style="display: none;"
+                x-cloak>
                <a href="{{ route('profile.edit') }}" class="dropdown-link">
+                   <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                   </svg>
                    {{ __('Profile') }}
                </a>
                <a href="{{ route('settings.index') }}" class="dropdown-link">
+                   <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                   </svg>
                    {{ __('Settings') }}
                </a>
 
-               {{-- Authentication --}}
+               {{-- Fixed logout form with proper styling --}}
                <form method="POST" action="{{ route('logout') }}">
                    @csrf
-                   <a href="{{ route('logout') }}"
-                           onclick="event.preventDefault();
-                                       this.closest('form').submit();" class="dropdown-link">
+                   <button type="submit" class="dropdown-link w-full text-left">
+                       <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                       </svg>
                        {{ __('Log Out') }}
-                   </a>
+                   </button>
                </form>
            </div>
        </div>

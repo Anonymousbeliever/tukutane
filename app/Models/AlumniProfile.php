@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class AlumniProfile extends Model
 {
@@ -31,5 +32,25 @@ class AlumniProfile extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the full URL for the profile photo.
+     * 
+     * @return string|null
+     */
+    public function getProfilePhotoUrlAttribute()
+    {
+        return $this->profile_photo_path ? Storage::url($this->profile_photo_path) : null;
+    }
+
+    /**
+     * Check if the profile has a photo.
+     * 
+     * @return bool
+     */
+    public function hasProfilePhoto()
+    {
+        return !empty($this->profile_photo_path);
     }
 }

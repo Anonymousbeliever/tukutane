@@ -22,6 +22,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'role', // Added role attribute
+        'theme_preference',
+        'notification_preference',
+        'language_preference',
+        'email_notifications',
+        'push_notifications',
     ];
 
     /**
@@ -42,6 +47,8 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'email_notifications' => 'boolean',
+        'push_notifications' => 'boolean',
     ];
 
     /**
@@ -74,5 +81,13 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isAlumnus()
     {
         return $this->role === 'alumnus';
+    }
+
+    /**
+     * Get the CSS class for the user's theme preference.
+     */
+    public function getThemeClass()
+    {
+        return 'theme-' . ($this->theme_preference ?? 'light');
     }
 }

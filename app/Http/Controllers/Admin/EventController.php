@@ -11,9 +11,20 @@ class EventController extends Controller
     /**
      * Display a listing of the events.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $events = Event::paginate(10);
+        $query = Event::query();
+        
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
+        
+        $events = $query->orderBy('date', 'desc')->paginate(10);
         return view('admin.events.index', compact('events'));
     }
 

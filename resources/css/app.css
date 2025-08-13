@@ -1,12 +1,10 @@
-/* Import base Tailwind for CSS reset and normalization */
-@import 'tailwindcss/base';
+/* Base Tailwind imports are removed */
 
 /* Define CSS variables for your colors */
 :root {
   --color-primary-red: #dc2626;
   --color-primary-red-light: #ef4444; /* Lighter shade for hover/active */
   --color-white: #ffffff;
-  --color-gray-50: #f9fafb;
   --color-gray-100: #f3f4f6;
   --color-gray-200: #e5e7eb;
   --color-gray-300: #d1d5db;
@@ -20,12 +18,99 @@
   --color-green-700: #047857;
   --color-green-800: #065f46;
   --color-red-100: #fee2e2;
-  --color-red-600: #dc2626;
+  --color-red-600: #ef4444; /* Added missing color variable */
   --color-red-700: #b91c1c;
   --color-red-800: #991b1b;
   --color-red-900: #7f1d1d;
   --color-yellow-100: #fef9c3;
   --color-yellow-800: #92400e;
+}
+
+/* Theme-specific styles */
+.theme-light {
+  --color-bg-primary: var(--color-white);
+  --color-bg-secondary: var(--color-gray-100);
+  --color-text-primary: var(--color-gray-900);
+  --color-text-secondary: var(--color-gray-600);
+  --color-border: var(--color-gray-200);
+}
+
+.theme-dark {
+  --color-bg-primary: var(--color-gray-900);
+  --color-bg-secondary: var(--color-gray-800);
+  --color-text-primary: var(--color-white);
+  --color-text-secondary: var(--color-gray-300);
+  --color-border: var(--color-gray-700);
+
+  background-color: var(--color-gray-900);
+  color: var(--color-white);
+}
+
+.theme-dark .bg-white {
+  background-color: var(--color-gray-800);
+}
+
+.theme-dark .bg-gray-100 {
+  background-color: var(--color-gray-900);
+}
+
+.theme-dark .bg-gray-50 {
+  background-color: var(--color-gray-800);
+}
+
+.theme-dark .text-gray-900 {
+  color: var(--color-white);
+}
+
+.theme-dark .text-gray-800 {
+  color: var(--color-gray-200);
+}
+
+.theme-dark .text-gray-700 {
+  color: var(--color-gray-300);
+}
+
+.theme-dark .text-gray-600 {
+  color: var(--color-gray-400);
+}
+
+.theme-dark .text-gray-500 {
+  color: var(--color-gray-500);
+}
+
+.theme-dark .border-gray-200 {
+  border-color: var(--color-gray-700);
+}
+
+.theme-dark .border-gray-100 {
+  border-color: var(--color-gray-700);
+}
+
+.theme-dark .navbar {
+  background-color: var(--color-gray-800);
+  border-bottom-color: var(--color-gray-700);
+}
+
+.theme-dark .sidebar {
+  background-color: var(--color-primary-red);
+}
+
+.theme-dark .dropdown-content {
+  background-color: var(--color-gray-800);
+  border-color: var(--color-gray-700);
+}
+
+.theme-dark .form-input,
+.theme-dark .form-textarea {
+  background-color: var(--color-gray-800);
+  border-color: var(--color-gray-600);
+  color: var(--color-white);
+}
+
+.theme-dark .form-input:focus,
+.theme-dark .form-textarea:focus {
+  border-color: var(--color-primary-red);
+  background-color: var(--color-gray-700);
 }
 
 /* General Body Styles */
@@ -35,20 +120,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--color-gray-100);
   color: var(--color-gray-900);
-  margin: 0;
-  padding: 0;
-}
-
-/* Reset some default styles */
-* {
-  box-sizing: border-box;
 }
 
 /* Utility Classes (mimicking common Tailwind patterns) */
-.flex {
-  display: flex;
-}
-
 .flex-center {
   display: flex;
   align-items: center;
@@ -64,22 +138,6 @@ body {
 .flex-col {
   display: flex;
   flex-direction: column;
-}
-
-.items-center {
-  align-items: center;
-}
-
-.justify-between {
-  justify-content: space-between;
-}
-
-.justify-center {
-  justify-content: center;
-}
-
-.grid {
-  display: grid;
 }
 
 .grid-cols-1 {
@@ -138,12 +196,6 @@ body {
   padding-left: 2rem;
   padding-right: 2rem;
 }
-.pl-10 {
-  padding-left: 2.5rem;
-}
-.pr-4 {
-  padding-right: 1rem;
-}
 
 .mb-2 {
   margin-bottom: 0.5rem;
@@ -196,9 +248,6 @@ body {
 .mr-4 {
   margin-right: 1rem;
 }
-.mr-6 {
-  margin-right: 1.5rem;
-}
 .ms-4 {
   margin-inline-start: 1rem;
 } /* For LTR/RTL compatibility */
@@ -206,14 +255,20 @@ body {
 .w-full {
   width: 100%;
 }
-.w-64 {
-  width: 16rem;
+.w-8 {
+  width: 2rem;
 }
-.w-24 {
-  width: 6rem;
+.w-4 {
+  width: 1rem;
+}
+.w-5 {
+  width: 1.25rem;
 }
 .w-6 {
   width: 1.5rem;
+}
+.w-7 {
+  width: 1.75rem;
 }
 .h-full {
   height: 100%;
@@ -221,11 +276,20 @@ body {
 .h-screen {
   height: 100vh;
 }
+.h-8 {
+  height: 2rem;
+}
+.h-4 {
+  height: 1rem;
+}
+.h-5 {
+  height: 1.25rem;
+}
 .h-6 {
   height: 1.5rem;
 }
-.h-24 {
-  height: 6rem;
+.h-7 {
+  height: 1.75rem;
 }
 .min-h-screen {
   min-height: 100vh;
@@ -414,9 +478,9 @@ body {
 .text-gray-900 {
   color: var(--color-gray-900);
 }
-.text-white {
+.text-white-color {
   color: var(--color-white);
-}
+} /* Custom name to avoid conflict */
 .text-primary-red {
   color: var(--color-primary-red);
 }
@@ -454,9 +518,6 @@ body {
 .tracking-widest {
   letter-spacing: 0.1em;
 }
-.tracking-wide {
-  letter-spacing: 0.025em;
-}
 .truncate {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -477,17 +538,11 @@ body {
 .z-40 {
   z-index: 40;
 }
-.z-50 {
-  z-index: 50;
-}
 .absolute {
   position: absolute;
 }
 .relative {
   position: relative;
-}
-.fixed {
-  position: fixed;
 }
 .inset-0 {
   top: 0;
@@ -503,9 +558,6 @@ body {
 }
 .right-0 {
   right: 0;
-}
-.bottom-0 {
-  bottom: 0;
 }
 .bottom-1 {
   bottom: 0.25rem;
@@ -596,19 +648,10 @@ body {
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
-.cursor-pointer {
-  cursor: pointer;
-}
-.no-underline {
-  text-decoration: none;
-}
-.outline-none {
-  outline: none;
-}
 
 /* Form Elements */
 .form-input {
-  border: 1px solid var(--color-gray-300);
+  border-color: var(--color-gray-300);
   border-radius: 0.375rem;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   padding: 0.5rem 0.75rem;
@@ -618,11 +661,11 @@ body {
 .form-input:focus {
   border-color: var(--color-primary-red);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-red), 0.25);
 }
 
 .form-textarea {
-  border: 1px solid var(--color-gray-300);
+  border-color: var(--color-gray-300);
   border-radius: 0.375rem;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   padding: 0.5rem 0.75rem;
@@ -632,7 +675,7 @@ body {
 .form-textarea:focus {
   border-color: var(--color-primary-red);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-red), 0.25);
 }
 
 .form-file-input {
@@ -691,7 +734,6 @@ body {
   transition: all 0.15s ease-in-out;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  text-decoration: none;
 }
 
 .btn-primary {
@@ -703,7 +745,7 @@ body {
 }
 .btn-primary:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.5), 0 0 0 4px rgba(220, 38, 38, 0.25);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-red), 0.5), 0 0 0 4px rgba(var(--color-primary-red), 0.25);
 }
 .btn-primary:active {
   background-color: var(--color-red-900);
@@ -723,7 +765,7 @@ body {
 }
 .btn-secondary:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.5), 0 0 0 4px rgba(220, 38, 38, 0.25);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-red), 0.5), 0 0 0 4px rgba(var(--color-primary-red), 0.25);
 }
 .btn-secondary:active {
   background-color: var(--color-gray-200);
@@ -738,7 +780,7 @@ body {
 }
 .btn-danger:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.5), 0 0 0 4px rgba(220, 38, 38, 0.25);
+  box-shadow: 0 0 0 2px rgba(var(--color-red-600), 0.5), 0 0 0 4px rgba(var(--color-red-600), 0.25);
 }
 .btn-danger:active {
   background-color: var(--color-red-900);
@@ -913,7 +955,7 @@ body {
 .navbar-search-input:focus {
   border-color: var(--color-primary-red);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-red), 0.25);
 }
 
 .navbar-search-icon {
@@ -941,7 +983,7 @@ body {
 }
 .navbar-icon-button:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.5);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-red), 0.5);
 }
 
 /* Dropdown styles (basic) */
@@ -974,10 +1016,12 @@ body {
   margin-top: 0.5rem;
   width: 12rem; /* 192px */
   background-color: var(--color-white);
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--color-gray-200);
   z-index: 50;
   display: none; /* Hidden by default, controlled by JS */
+  overflow: hidden;
 }
 
 .dropdown-content.show {
@@ -985,15 +1029,26 @@ body {
 }
 
 .dropdown-link {
-  display: block;
-  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.75rem 1rem;
   color: var(--color-gray-700);
   text-decoration: none;
   transition: all 0.15s ease-in-out;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.875rem;
 }
+
 .dropdown-link:hover {
-  background-color: var(--color-gray-100);
-  color: var(--color-gray-900);
+  background-color: var(--color-gray-50);
+  color: var(--color-primary-red);
+}
+
+.dropdown-link:last-child {
+  border-bottom: none;
 }
 
 /* Responsive adjustments */
@@ -1042,6 +1097,15 @@ body {
   }
 }
 
+@media (max-width: 767px) {
+  .md-hidden {
+    display: block;
+  }
+  .navbar-search-md-block {
+    display: none;
+  }
+}
+
 /* Specific styles for profile photo in forms */
 .profile-photo-preview {
   width: 6rem; /* 96px */
@@ -1064,32 +1128,12 @@ body {
   margin-bottom: 0;
 }
 
-/* Success/Alert Message Styles */
-.alert {
-  padding: 1rem 1.5rem;
-  margin-bottom: 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
+/* Alpine.js cloak directive */
+[x-cloak] {
+  display: none !important;
 }
 
-.alert-success {
-  background-color: var(--color-green-100);
-  color: var(--color-green-800);
-  border: 1px solid var(--color-green-700);
-}
-
-.alert-error {
-  background-color: var(--color-red-100);
-  color: var(--color-red-800);
-  border: 1px solid var(--color-red-700);
-}
-
-.alert-warning {
-  background-color: var(--color-yellow-100);
-  color: var(--color-yellow-800);
-}
-
-.alert-info {
-  background-color: var(--color-blue-100);
-  color: var(--color-blue-800);
+/* Additional utility classes */
+.rotate-180 {
+  transform: rotate(180deg);
 }
