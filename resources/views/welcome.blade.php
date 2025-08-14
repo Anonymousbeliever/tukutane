@@ -1,242 +1,875 @@
 <x-guest-layout>
-    <div class="min-h-screen bg-white text-gray-900 flex-col flex">
-        {{-- Header/Navigation for Landing Page --}}
-        <header class="absolute top-0 left-0 right-0 z-10 p-4 sm:p-6 lg:p-8 bg-transparent">
-            <nav class="flex items-center justify-between max-w-7xl mx-auto">
-                <div class="flex items-center">
-                    <a href="{{ url('/') }}" class="text-2xl sm:text-3xl font-extrabold text-primary-red">Tukutane</a>
-                </div>
-                <!-- Improved mobile navigation with responsive design -->
-                <div class="hidden md:flex items-center gap-4 lg:gap-6">
-                    <a href="#about" class="text-gray-700 hover:text-primary-red transition-colors duration-200 text-base lg:text-lg font-medium">About</a>
-                    <a href="#events" class="text-gray-700 hover:text-primary-red transition-colors duration-200 text-base lg:text-lg font-medium">Events</a>
-                    <a href="#contact" class="text-gray-700 hover:text-primary-red transition-colors duration-200 text-base lg:text-lg font-medium">Contact</a>
-                    @if (Route::has('login'))
-                        @auth
-                            <a href="{{ url('/dashboard') }}" class="btn btn-primary px-4 py-2 lg:px-6 lg:py-3 text-sm shadow-md">
-                                Dashboard
-                            </a>
-                        @else
-                            <a href="{{ route('login') }}" class="btn btn-primary px-4 py-2 lg:px-6 lg:py-3 text-sm shadow-md">
-                                Log in
-                            </a>
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="ml-2 lg:ml-4 text-gray-700 hover:text-primary-red transition-colors duration-200 text-base lg:text-lg font-medium">Register</a>
-                            @endif
-                        @endauth
-                    @endif
-                </div>
-                <!-- Mobile menu button -->
-                <div class="md:hidden">
-                    <button id="mobile-menu-button" class="text-gray-700 hover:text-primary-red p-2">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
-                </div>
-            </nav>
-            <!-- Mobile menu -->
-            <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg rounded-lg mt-2 p-4">
-                <div class="flex flex-col space-y-3">
-                    <a href="#about" class="text-gray-700 hover:text-primary-red transition-colors duration-200 font-medium">About</a>
-                    <a href="#events" class="text-gray-700 hover:text-primary-red transition-colors duration-200 font-medium">Events</a>
-                    <a href="#contact" class="text-gray-700 hover:text-primary-red transition-colors duration-200 font-medium">Contact</a>
-                    @if (Route::has('login'))
-                        @auth
-                            <a href="{{ url('/dashboard') }}" class="btn btn-primary text-center text-sm">Dashboard</a>
-                        @else
-                            <a href="{{ route('login') }}" class="btn btn-primary text-center text-sm">Log in</a>
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="text-gray-700 hover:text-primary-red transition-colors duration-200 font-medium text-center">Register</a>
-                            @endif
-                        @endauth
-                    @endif
-                </div>
-            </div>
-        </header>
+    <style>
+        :root {
+            --primary: #dc2626;
+            --primary-light: #ef4444;
+            --primary-dark: #b91c1c;
+            --secondary: #f8fafc;
+            --dark: #0f172a;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+        }
 
-        {{-- Hero Section --}}
-        <!-- Improved hero section with better responsive design and spacing -->
-        <section class="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
-            <div class="absolute inset-0">
-                <img src="/placeholder.svg?height=1080&width=1920" alt="Alumni Network" class="w-full h-full object-cover opacity-60">
-                <div class="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent"></div>
-            </div>
-            <div class="relative z-10 text-center max-w-5xl px-4 sm:px-6 lg:px-8">
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-gray-900 leading-tight mb-4 sm:mb-6 drop-shadow-lg">
-                    Your Network, <br class="hidden sm:block">Your Power
-                </h1>
-                <p class="text-base sm:text-lg lg:text-xl text-gray-700 mb-6 sm:mb-8 max-w-3xl mx-auto drop-shadow-md leading-relaxed">
-                    Connect with fellow graduates, discover exciting events, and empower your professional journey with Tukutane.
-                </p>
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-                    <a href="{{ route('login') }}" class="btn btn-primary px-6 sm:px-8 py-3 sm:py-4 text-base lg:text-lg rounded-full shadow-lg w-full sm:w-auto">
-                        Get Started
-                    </a>
-                    <a href="#events-highlight" class="btn btn-secondary px-6 sm:px-8 py-3 sm:py-4 text-base lg:text-lg rounded-full shadow-lg w-full sm:w-auto">
-                        Explore Events
-                    </a>
-                </div>
-            </div>
-        </section>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        {{-- About Tukutane Section --}}
-        <!-- Enhanced about section with better grid layout and spacing -->
-        <section id="about" class="py-12 sm:py-16 lg:py-20 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">About Tukutane</h2>
-                <p class="text-lg sm:text-xl text-gray-700 max-w-4xl mx-auto mb-8 sm:mb-12 leading-relaxed">
-                    Tukutane is the premier alumni management system for the Institute of Software Technologies (IST), designed to foster lasting connections and professional growth among graduates.
-                </p>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-                    <div class="bg-gray-50 p-6 lg:p-8 rounded-xl shadow-md border border-gray-200 hover:shadow-xl hover:scale-105 transition-all duration-300 ease-in-out">
-                        <svg class="h-10 w-10 sm:h-12 sm:w-12 text-primary-red mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-900);
+            overflow-x: hidden;
+        }
+
+        /* Enhanced Navigation */
+        .navbar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            padding: 1.5rem 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: -0.025em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--gray-700);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--gray-700);
+            padding: 0.5rem;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 2rem;
+            right: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .mobile-menu.show {
+            display: block;
+        }
+
+        .mobile-menu .nav-link,
+        .mobile-menu .btn-primary {
+            display: block;
+            margin-bottom: 0.75rem;
+            text-align: center;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="grad1" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color:rgba(255,255,255,0.1);stop-opacity:1" /><stop offset="100%" style="stop-color:rgba(255,255,255,0);stop-opacity:1" /></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23grad1)" /><circle cx="800" cy="300" r="150" fill="url(%23grad1)" /><circle cx="400" cy="700" r="120" fill="url(%23grad1)" /></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            letter-spacing: -0.025em;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2.5rem;
+            line-height: 1.7;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-hero-primary {
+            background: white;
+            color: var(--primary);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-hero-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-hero-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .btn-hero-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-3px);
+        }
+
+        /* About Section */
+        .about {
+            padding: 8rem 2rem;
+            background: var(--gray-50);
+        }
+
+        .about-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.025em;
+        }
+
+        .section-subtitle {
+            font-size: 1.25rem;
+            color: var(--gray-600);
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+        }
+
+        /* Enhanced Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid var(--gray-200);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
+        }
+
+        .feature-icon svg {
+            width: 40px;
+            height: 40px;
+            color: white;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: var(--gray-600);
+            line-height: 1.7;
+            font-size: 1.1rem;
+        }
+
+        /* Events Section */
+        .events {
+            padding: 8rem 2rem;
+            background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-800) 100%);
+            color: white;
+        }
+
+        .events-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .events .section-title {
+            color: white;
+        }
+
+        .events .section-subtitle {
+            color: var(--gray-300);
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .event-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .event-date {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .event-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .event-location {
+            color: var(--gray-400);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .event-card p {
+            color: var(--gray-300);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .event-link {
+            color: var(--primary-light);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: gap 0.3s ease;
+        }
+
+        .event-link:hover {
+            gap: 1rem;
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 8rem 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta h2 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.025em;
+        }
+
+        .cta p {
+            font-size: 1.25rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+            line-height: 1.7;
+        }
+
+        .btn-cta {
+            background: white;
+            color: var(--primary);
+            padding: 1.2rem 3rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Enhanced Footer */
+        .footer {
+            background: var(--gray-900);
+            color: var(--gray-300);
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand h3 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            line-height: 1.7;
+            color: var(--gray-400);
+        }
+
+        .footer-links h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-light);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--gray-800);
+            padding-top: 2rem;
+            text-align: center;
+            color: var(--gray-500);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .section-title {
+                font-size: 2.2rem;
+            }
+
+            .features-grid,
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta h2 {
+                font-size: 2.2rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-card,
+        .event-card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .feature-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .feature-card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+    </style>
+
+    <!-- Enhanced Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url('/') }}" class="logo">Tukutane</a>
+            <div class="nav-links">
+                <a href="#about" class="nav-link">About</a>
+                <a href="#events" class="nav-link">Events</a>
+                <a href="#contact" class="nav-link">Contact</a>
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="btn-primary">Dashboard</a>
+                @else
+                    @if (Route::has('login'))
+                        <a href="{{ route('login') }}" class="btn-primary">Get Started</a>
+                    @endif
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="nav-link">Register</a>
+                    @endif
+                @endauth
+            </div>
+            <!-- Mobile menu button -->
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+        <!-- Mobile menu -->
+        <div class="mobile-menu" id="mobile-menu">
+            <a href="#about" class="nav-link">About</a>
+            <a href="#events" class="nav-link">Events</a>
+            <a href="#contact" class="nav-link">Contact</a>
+            @auth
+                <a href="{{ url('/dashboard') }}" class="btn-primary">Dashboard</a>
+            @else
+                @if (Route::has('login'))
+                    <a href="{{ route('login') }}" class="btn-primary">Get Started</a>
+                @endif
+                @if (Route::has('register'))
+                    <a href="{{ route('register') }}" class="nav-link">Register</a>
+                @endif
+            @endauth
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Your Network, Your Power</h1>
+            <p>Connect with fellow graduates, discover exciting events, and empower your professional journey with Tukutane - the premier alumni network for IST.</p>
+            <div class="hero-buttons">
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="btn-hero-primary">Go to Dashboard</a>
+                @else
+                    @if (Route::has('login'))
+                        <a href="{{ route('login') }}" class="btn-hero-primary">Get Started</a>
+                    @endif
+                @endauth
+                <a href="#events" class="btn-hero-secondary">Explore Events</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="about-container">
+            <h2 class="section-title">About Tukutane</h2>
+            <p class="section-subtitle">Tukutane is the premier alumni management system for the Institute of Software Technologies (IST), designed to foster lasting connections and professional growth among graduates.</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
-                        <h3 class="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">Alumni Profiles</h3>
-                        <p class="text-gray-700 leading-relaxed">Create and manage your professional profile, showcasing your achievements and connecting with peers.</p>
                     </div>
-                    <div class="bg-gray-50 p-6 lg:p-8 rounded-xl shadow-md border border-gray-200 hover:shadow-xl hover:scale-105 transition-all duration-300 ease-in-out">
-                        <svg class="h-10 w-10 sm:h-12 sm:w-12 text-primary-red mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <h3>Alumni Profiles</h3>
+                    <p>Create and manage your professional profile, showcasing your achievements and connecting with peers across the industry.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
-                        <h3 class="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">Events & Networking</h3>
-                        <p class="text-gray-700 leading-relaxed">Stay updated on exclusive alumni events, workshops, and networking opportunities.</p>
                     </div>
-                    <div class="bg-gray-50 p-6 lg:p-8 rounded-xl shadow-md border border-gray-200 hover:shadow-xl hover:scale-105 transition-all duration-300 ease-in-out md:col-span-2 lg:col-span-1">
-                        <svg class="h-10 w-10 sm:h-12 sm:w-12 text-primary-red mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <h3>Events & Networking</h3>
+                    <p>Stay updated on exclusive alumni events, workshops, and networking opportunities designed to advance your career.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h10m-9 4h8a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                         </svg>
-                        <h3 class="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">Secure Payments</h3>
-                        <p class="text-gray-700 leading-relaxed">Easily make payments for events or donations through integrated M-Pesa Daraja.</p>
                     </div>
+                    <h3>Secure Payments</h3>
+                    <p>Easily make payments for events or donations through our integrated M-Pesa Daraja payment system.</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        {{-- Upcoming Events Highlight Section --}}
-        <!-- Improved events section with better card design and responsive layout -->
-        <section id="events-highlight" class="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-gray-50 to-gray-100">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 text-center mb-8 sm:mb-12">Featured Events</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-xl hover:scale-105 transition-all duration-300 ease-in-out">
-                        <div class="flex items-center mb-3">
-                            <div class="w-3 h-3 bg-primary-red rounded-full mr-3"></div>
-                            <span class="text-sm text-gray-500 font-medium">December 15, 2025</span>
-                        </div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Annual Alumni Gala</h3>
-                        <p class="text-gray-600 text-sm mb-3">Grand Hyatt Nairobi</p>
-                        <p class="text-gray-700 mb-4 leading-relaxed">Join us for an evening of celebration, networking, and fine dining. Reconnect with old friends and make new connections.</p>
-                        <a href="{{ route('login') }}" class="inline-flex items-center text-primary-red hover:text-red-700 font-medium transition-colors duration-200">
-                            Learn More & RSVP 
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <!-- Events Section -->
+    <section id="events" class="events">
+        <div class="events-container">
+            <h2 class="section-title">Featured Events</h2>
+            <p class="section-subtitle">Join our upcoming events and connect with fellow alumni from around the world.</p>
+            
+            <div class="events-grid">
+                <div class="event-card">
+                    <div class="event-date">December 15, 2025</div>
+                    <h3>Annual Alumni Gala</h3>
+                    <div class="event-location">Grand Hyatt Nairobi</div>
+                    <p>Join us for an evening of celebration, networking, and fine dining. Reconnect with old friends and make new connections.</p>
+                    @auth
+                        <a href="{{ url('/dashboard') }}" class="event-link">
+                            Learn More & RSVP
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
                         </a>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-xl hover:scale-105 transition-all duration-300 ease-in-out">
-                        <div class="flex items-center mb-3">
-                            <div class="w-3 h-3 bg-primary-red rounded-full mr-3"></div>
-                            <span class="text-sm text-gray-500 font-medium">November 20, 2025</span>
-                        </div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Tech Innovation Summit</h3>
-                        <p class="text-gray-600 text-sm mb-3">IST Auditorium</p>
-                        <p class="text-gray-700 mb-4 leading-relaxed">A day of insightful talks and workshops on the latest trends in software technology. Featuring industry leaders and alumni experts.</p>
-                        <a href="{{ route('login') }}" class="inline-flex items-center text-primary-red hover:text-red-700 font-medium transition-colors duration-200">
-                            Learn More & RSVP 
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    @else
+                        <a href="{{ route('login') }}" class="event-link">
+                            Learn More & RSVP
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
                         </a>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-xl hover:scale-105 transition-all duration-300 ease-in-out md:col-span-2 lg:col-span-1">
-                        <div class="flex items-center mb-3">
-                            <div class="w-3 h-3 bg-primary-red rounded-full mr-3"></div>
-                            <span class="text-sm text-gray-500 font-medium">October 28, 2025</span>
-                        </div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Career Mentorship Session</h3>
-                        <p class="text-gray-600 text-sm mb-3">Online Event</p>
-                        <p class="text-gray-700 mb-4 leading-relaxed">Get personalized career advice from experienced alumni in various fields. A great opportunity for recent graduates.</p>
-                        <a href="{{ route('login') }}" class="inline-flex items-center text-primary-red hover:text-red-700 font-medium transition-colors duration-200">
-                            Learn More & RSVP 
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    @endauth
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">November 20, 2025</div>
+                    <h3>Tech Innovation Summit</h3>
+                    <div class="event-location">IST Auditorium</div>
+                    <p>A day of insightful talks and workshops on the latest trends in software technology. Featuring industry leaders and alumni experts.</p>
+                    @auth
+                        <a href="{{ url('/dashboard') }}" class="event-link">
+                            Learn More & RSVP
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
                         </a>
-                    </div>
+                    @else
+                        <a href="{{ route('login') }}" class="event-link">
+                            Learn More & RSVP
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    @endauth
                 </div>
-                <div class="text-center mt-8 sm:mt-12">
-                    <a href="{{ route('login') }}" class="btn btn-primary px-6 sm:px-8 py-3 sm:py-4 text-base shadow-md rounded-full">
-                        View All Events
-                    </a>
+
+                <div class="event-card">
+                    <div class="event-date">October 28, 2025</div>
+                    <h3>Career Mentorship Session</h3>
+                    <div class="event-location">Online Event</div>
+                    <p>Get personalized career advice from experienced alumni in various fields. A great opportunity for recent graduates.</p>
+                    @auth
+                        <a href="{{ url('/dashboard') }}" class="event-link">
+                            Learn More & RSVP
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" class="event-link">
+                            Learn More & RSVP
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    @endauth
                 </div>
             </div>
-        </section>
-
-        {{-- Call to Action / Join Section --}}
-        <!-- Enhanced CTA section with better spacing and responsive design -->
-        <section class="py-12 sm:py-16 lg:py-20 bg-primary-red text-white text-center">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-3xl sm:text-4xl font-bold mb-3 sm:mb-4">Ready to Connect?</h2>
-                <p class="text-lg sm:text-xl mb-6 sm:mb-8 leading-relaxed">Join the Tukutane alumni network today and unlock a world of opportunities.</p>
-                <a href="{{ route('register') }}" class="btn btn-secondary px-6 sm:px-8 py-3 sm:py-4 text-base lg:text-lg rounded-full shadow-lg inline-block">
-                    Register Now
-                </a>
+            
+            <div style="text-align: center; margin-top: 3rem;">
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="btn-hero-primary">View All Events</a>
+                @else
+                    <a href="{{ route('login') }}" class="btn-hero-primary">View All Events</a>
+                @endauth
             </div>
-        </section>
+        </div>
+    </section>
 
-        {{-- Footer --}}
-        <!-- Improved footer with better responsive grid and spacing -->
-        <footer id="contact" class="bg-gray-900 text-gray-300 py-8 sm:py-12">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-                    <div class="md:col-span-2 lg:col-span-1">
-                        <h3 class="text-xl font-bold text-white mb-3 sm:mb-4">Tukutane</h3>
-                        <p class="text-gray-400 leading-relaxed">Connecting IST graduates, empowering futures through professional networking and continuous learning.</p>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-white mb-3 sm:mb-4">Quick Links</h3>
-                        <ul class="space-y-2">
-                            <li><a href="#about" class="hover:text-primary-red transition-colors duration-200">About Us</a></li>
-                            <li><a href="#events-highlight" class="hover:text-primary-red transition-colors duration-200">Events</a></li>
-                            <li><a href="{{ route('login') }}" class="hover:text-primary-red transition-colors duration-200">Login</a></li>
-                            <li><a href="{{ route('register') }}" class="hover:text-primary-red transition-colors duration-200">Register</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-white mb-3 sm:mb-4">Contact Us</h3>
-                        <div class="space-y-2 text-gray-400">
-                            <p>Email: info@tukutane.com</p>
-                            <p>Phone: +254 7XX XXX XXX</p>
-                            <p>Address: Institute of Software Technologies, Nairobi, Kenya</p>
-                        </div>
-                    </div>
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="cta-container">
+            <h2>Ready to Connect?</h2>
+            <p>Join the Tukutane alumni network today and unlock a world of opportunities, connections, and professional growth.</p>
+            @if (Route::has('register'))
+                <a href="{{ route('register') }}" class="btn-cta">Register Now</a>
+            @else
+                <a href="{{ route('login') }}" class="btn-cta">Get Started</a>
+            @endif
+        </div>
+    </section>
+
+    <!-- Enhanced Footer -->
+    <footer id="contact" class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Tukutane</h3>
+                    <p>Connecting IST graduates and empowering futures through professional networking, continuous learning, and meaningful relationships.</p>
                 </div>
-                <div class="text-center text-gray-500 mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-gray-700">
-                    &copy; {{ date('Y') }} Tukutane. All rights reserved.
+                
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#events">Events</a></li>
+                        <li><a href="#">Alumni Directory</a></li>
+                        <li><a href="#">Career Resources</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Account</h4>
+                    <ul>
+                        @if (Route::has('login'))
+                            @auth
+                                <li><a href="{{ url('/dashboard') }}">Dashboard</a></li>
+                            @else
+                                <li><a href="{{ route('login') }}">Login</a></li>
+                                @if (Route::has('register'))
+                                    <li><a href="{{ route('register') }}">Register</a></li>
+                                @endif
+                            @endauth
+                        @endif
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Contact Us</h4>
+                    <ul>
+                        <li>Email: info@tukutane.com</li>
+                        <li>Phone: +254 7XX XXX XXX</li>
+                        <li>Address: Institute of Software Technologies</li>
+                        <li>Nairobi, Kenya</li>
+                    </ul>
                 </div>
             </div>
-        </footer>
-    </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; {{ date('Y') }} Tukutane. All rights reserved. Built with ❤️ for IST Alumni.</p>
+            </div>
+        </div>
+    </footer>
 
-    <!-- Added JavaScript for mobile menu functionality -->
     <script>
+        // Mobile menu functionality
         document.addEventListener('DOMContentLoaded', function() {
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
             const mobileMenu = document.getElementById('mobile-menu');
             
-            if (mobileMenuButton && mobileMenu) {
-                mobileMenuButton.addEventListener('click', function() {
-                    mobileMenu.classList.toggle('hidden');
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('show');
                 });
                 
                 // Close mobile menu when clicking outside
                 document.addEventListener('click', function(event) {
-                    if (!mobileMenuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
-                        mobileMenu.classList.add('hidden');
+                    if (!mobileMenuBtn.contains(event.target) && !mobileMenu.contains(event.target)) {
+                        mobileMenu.classList.remove('show');
                     }
                 });
+
+                // Close mobile menu when clicking on a link
+                const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+                mobileMenuLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        mobileMenu.classList.remove('show');
+                    });
+                });
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll effect to navbar
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.1)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                navbar.style.boxShadow = 'none';
             }
         });
     </script>

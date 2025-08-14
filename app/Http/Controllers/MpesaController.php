@@ -7,6 +7,7 @@ use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class MpesaController extends Controller
 {
@@ -17,13 +18,31 @@ class MpesaController extends Controller
     {
         $request->validate([
             'amount' => 'required|numeric|min:1',
-            'phone_number' => 'required|string|min:10', // More flexible for demo
+            'phone_number' => 'required|string|min:10',
             'payment_id' => 'required|exists:payments,id',
         ]);
 
         $amount = $request->amount;
         $phone = $request->phone_number;
         $paymentId = $request->payment_id;
+
+        // Create the payment record if it doesn't exist
+        $payment = Payment::find($paymentId);
+        if (!$payment) {
+            $payment = Payment::create([
+                'user_id' => Auth::id(),
+                'amount' => $amount,
+                'type' => $request->type ?? 'donation',
+                'event_id' => $request->event_id ?? null,
+                'status' => 'pending',
+            ]);
+            $paymentId = $payment->id;
+        } else {
+            $payment->update([
+                'amount' => $amount,
+                'status' => 'pending',
+            ]);
+        }
 
         // Ensure phone number is in correct format for demo
         if (!str_starts_with($phone, '254')) {
@@ -66,9 +85,6 @@ class MpesaController extends Controller
                     'phone_number' => $phone,
                     'amount' => $amount,
                 ]);
-
-                // Update payment status to pending
-                Payment::find($paymentId)->update(['status' => 'pending']);
 
                 return redirect()->route('payment.status', $paymentId)
                     ->with('success', 'M-Pesa STK Push initiated. Please check your phone to complete the payment.');

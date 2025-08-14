@@ -21,6 +21,9 @@ module.exports = {
     // Form variants
     "form-input",
     "form-textarea",
+    // Layout utilities
+    "w-full-important",
+    "max-w-none-important",
   ],
   content: [
     "./resources/views/**/*.blade.php",
@@ -30,20 +33,35 @@ module.exports = {
     "./app/View/Components/**/*.php",
   ],
   theme: {
+    // Remove or modify the container configuration that's causing centering
     container: {
-      center: true,
-      padding: "2rem",
+      center: false, // Changed from true to false
+      padding: "0", // Reduced padding
       screens: {
-        "2xl": "1400px",
+        "sm": "640px",
+        "md": "768px",
+        "lg": "1024px",
+        "xl": "1280px",
+        "2xl": "1400px", // Increased from 1400px
       },
     },
     extend: {
+      maxWidth: {
+        'none': 'none',
+        'full': '100%',
+        'screen': '100vw',
+        '8xl': '1400px',
+        '9xl': '1600px',
+      },
+      width: {
+        'screen': '100vw',
+      },
       colors: {
         // Your brand colors
         "tukutane-red": "#DC2626",
         "tukutane-red-light": "#EF4444", 
         "tukutane-white": "#FFFFFF",
-        
+                
         // Shadcn/UI integration
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -55,7 +73,7 @@ module.exports = {
           foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
+          DEFAULT: "hsl(var(--secondary-hsl))",
           foreground: "hsl(var(--secondary-foreground))",
         },
         destructive: {
@@ -85,7 +103,7 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["Figtree", "sans-serif"],
+        sans: ["Inter", "Figtree", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {

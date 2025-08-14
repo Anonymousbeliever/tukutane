@@ -14,11 +14,22 @@
         {{-- Scripts & Styles --}}
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased bg-gray-100">
-        {{-- This div is for Breeze's default auth pages (login, register, etc.) --}}
-        {{-- The welcome.blade.php will take over the full page content --}}
-        <div class="min-h-screen flex-col flex-center pt-6 sm:pt-0 bg-gray-100">
-            {{ $slot }}
-        </div>
+    <body class="font-sans antialiased">
+        {{-- Check if this is the welcome page for full width, otherwise use auth layout --}}
+        @if(request()->routeIs('welcome') || request()->is('/'))
+            {{-- Full width for welcome page --}}
+            <div class="welcome-page min-h-screen w-full">
+                {{ $slot }}
+            </div>
+        @else
+            {{-- Centered layout for auth pages (login, register, etc.) --}}
+            <div class="min-h-screen flex flex-col justify-center py-6 sm:py-12" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="relative py-3 sm:max-w-xl sm:mx-auto w-full px-4">
+                    <div class="auth-form">
+                        {{ $slot }}
+                    </div>
+                </div>
+            </div>
+        @endif
     </body>
 </html>

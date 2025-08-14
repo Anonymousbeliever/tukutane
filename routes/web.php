@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MpesaController;
-use App\Http\Controllers\SettingsController; // Import the new controller
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\Admin\AlumniController as AdminAlumniController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
@@ -16,11 +16,6 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
 */
 
 Route::get('/', function () {
@@ -65,18 +60,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('payments.pay');
 
     Route::post('/payments/mpesa-stk-push', [MpesaController::class, 'stkPush'])->name('mpesa.stk_push');
+    
+    // Payment Status Route
+    Route::get('/payments/{payment}/status', [MpesaController::class, 'paymentStatus'])->name('payment.status');
+    
+    // Test Success Route (for local development only)
+    Route::post('/payments/{payment}/test-success', function (Payment $payment) {
+        $payment->update(['status' => 'completed']);
+        return redirect()->route('payment.status', $payment)->with('success', 'Payment marked as successful (demo mode).');
+    })->name('payments.test_success');
 
     // Settings Page
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
-
 
     // Admin Routes
     Route::middleware('checkrole:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
         // Alumni Management
-        Route::resource('alumni', AdminAlumniController::class)->except(['show', 'create', 'store']); // Alumni are created via registration
+        Route::resource('alumni', AdminAlumniController::class)->except(['show', 'create', 'store']);
         Route::get('alumni/{user}/edit', [AdminAlumniController::class, 'edit'])->name('alumni.edit');
         Route::patch('alumni/{user}', [AdminAlumniController::class, 'update'])->name('alumni.update');
         Route::delete('alumni/{user}', [AdminAlumniController::class, 'destroy'])->name('alumni.destroy');
@@ -88,5 +91,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('payments', [AdminPaymentController::class, 'index'])->name('payments.index');
     });
 });
+
+// M-Pesa Callback Route (outside auth middleware)
+Route::post('/mpesa/callback', [MpesaController::class, 'callback'])->name('mpesa.callback');
 
 require __DIR__.'/auth.php';

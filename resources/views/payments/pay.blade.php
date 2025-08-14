@@ -10,7 +10,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm-rounded-lg">
                 <div class="p-6 text-gray-900">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">
-                        @if ($payment->type === 'event' && $event)
+                        @if ($event)
                             Payment for: {{ $event->title }}
                         @else
                             Make a Donation
@@ -33,7 +33,12 @@
                     <form method="POST" action="{{ route('mpesa.stk_push') }}">
                         @csrf
 
-                        <input type="hidden" name="payment_id" value="{{ $payment->id }}">
+                        @if($event)
+                            <input type="hidden" name="event_id" value="{{ $event->id }}">
+                            <input type="hidden" name="type" value="event">
+                        @else
+                            <input type="hidden" name="type" value="donation">
+                        @endif
 
                         <div>
                             <x-input-label for="amount" :value="__('Amount (KSh)')" />
@@ -42,7 +47,7 @@
                                 class="block mt-1 w-full" 
                                 type="number" 
                                 name="amount" 
-                                :value="old('amount', $payment->amount > 0 ? $payment->amount : '')" 
+                                :value="old('amount', $event && $event->price > 0 ? $event->price : '')" 
                                 required 
                                 autofocus 
                                 min="1"
@@ -73,16 +78,14 @@
                                 Pay with M-Pesa
                             </button>
 
-                            {{-- Demo test button --}}
+                            {{-- Demo test button for local environment --}}
                             @if (app()->environment('local'))
-                            <form method="POST" action="{{ route('payments.test_success', $payment) }}" class="inline">
-                                @csrf
                                 <button 
-                                    type="submit" 
+                                    type="button"
+                                    onclick="simulatePayment()" 
                                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm">
                                     Test Success (Demo)
                                 </button>
-                            </form>
                             @endif
                         </div>
                     </form>
@@ -90,4 +93,37 @@
             </div>
         </div>
     </div>
+
+    @if (app()->environment('local'))
+    <script>
+        function simulatePayment() {
+            // Get form data
+            const form = document.querySelector('form[action="{{ route('mpesa.stk_push') }}"]');
+            const formData = new FormData(form);
+            
+            // Add demo flag
+            formData.append('demo_success', '1');
+            
+            // Submit the form with demo flag
+            fetch('{{ route('mpesa.stk_push') }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                }
+            }).then(response => {
+                if (response.ok) {
+                    return response.text();
+                }
+                throw new Error('Network response was not ok');
+            }).then(data => {
+                // Redirect to success page or reload
+                window.location.reload();
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('Demo payment failed');
+            });
+        }
+    </script>
+    @endif
 </x-app-layout>
