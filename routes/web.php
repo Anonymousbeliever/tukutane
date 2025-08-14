@@ -49,15 +49,29 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view('events.show', compact('event'));
     })->name('events.show');
 
-    // Payments for Alumni (Option 2 — create record before form)
+    // Test payment form route (for development)
+    Route::get('/test-payment', function () {
+        // Create a test payment record
+        $payment = Payment::create([
+            'user_id' => Auth::id(),
+            'amount' => 1000,
+            'event_id' => null,
+            'type' => 'donation',
+            'status' => 'pending',
+        ]);
+
+        return view('payments.pay', compact('payment'));
+    })->name('test.payment');
+
+    // Payments for Alumni - Create payment record before showing form
     Route::get('/payments/pay/{event?}', function (Event $event = null) {
-        $payment = new Payment();
-        $payment->amount = $event ? $event->price : 0;
-        $payment->event_id = $event ? $event->id : null;
-        $payment->type = $event ? 'event' : 'donation';
-        $payment->status = 'pending';
-        $payment->user_id = Auth::id();
-        $payment->save(); // Save so we have an ID for mpesa
+        $payment = Payment::create([
+            'user_id' => Auth::id(),
+            'amount' => $event ? $event->price : 1000,
+            'event_id' => $event ? $event->id : null,
+            'type' => $event ? 'event' : 'donation',
+            'status' => 'pending',
+        ]);
 
         return view('payments.pay', compact('payment', 'event'));
     })->name('payments.pay');

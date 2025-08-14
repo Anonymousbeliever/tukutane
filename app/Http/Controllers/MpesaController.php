@@ -16,49 +16,67 @@ class MpesaController extends Controller
      */
     public function stkPush(Request $request)
     {
-        $request->validate([
-            'amount' => 'required|numeric|min:1',
-            'phone_number' => 'required|string|min:10',
-            'payment_id' => 'required|exists:payments,id',
-        ]);
-
-        $amount = $request->amount;
-        $phone = $request->phone_number;
-        $paymentId = $request->payment_id;
-
-        // Create the payment record if it doesn't exist
-        $payment = Payment::find($paymentId);
-        if (!$payment) {
-            $payment = Payment::create([
-                'user_id' => Auth::id(),
-                'amount' => $amount,
-                'type' => $request->type ?? 'donation',
-                'event_id' => $request->event_id ?? null,
-                'status' => 'pending',
-            ]);
-            $paymentId = $payment->id;
-        } else {
-            $payment->update([
-                'amount' => $amount,
-                'status' => 'pending',
-            ]);
-        }
-
-        // Ensure phone number is in correct format for demo
-        if (!str_starts_with($phone, '254')) {
-            // Convert 07XXXXXXXX to 2547XXXXXXXX
-            if (str_starts_with($phone, '0')) {
-                $phone = '254' . substr($phone, 1);
-            }
-        }
-
-        $timestamp = now()->format('YmdHis');
-        $password = base64_encode(env('MPESA_SHORTCODE') . env('MPESA_PASSKEY') . $timestamp);
-
         try {
+            $request->validate([
+                'amount' => 'required|numeric|min:1',
+                'phone_number' => 'required|string|min:10',
+                'payment_id' => 'nullable|exists:payments,id',
+                'type' => 'nullable|string',
+                'event_id' => 'nullable|exists:events,id',
+            ]);
+
+            $amount = $request->amount;
+            $phone = $request->phone_number;
+            $paymentId = $request->payment_id;
+
+            // Create or update the payment record
+            if ($paymentId) {
+                $payment = Payment::find($paymentId);
+                if ($payment) {
+                    $payment->update([
+                        'amount' => $amount,
+                        'status' => 'pending',
+                    ]);
+                } else {
+                    // Payment ID provided but doesn't exist, create new one
+                    $payment = Payment::create([
+                        'user_id' => Auth::id(),
+                        'amount' => $amount,
+                        'type' => $request->type ?? 'donation',
+                        'event_id' => $request->event_id ?? null,
+                        'status' => 'pending',
+                    ]);
+                }
+            } else {
+                // No payment ID provided, create new payment
+                $payment = Payment::create([
+                    'user_id' => Auth::id(),
+                    'amount' => $amount,
+                    'type' => $request->type ?? 'donation',
+                    'event_id' => $request->event_id ?? null,
+                    'status' => 'pending',
+                ]);
+            }
+
+            $paymentId = $payment->id;
+
+            // Format phone number correctly
+            if (!str_starts_with($phone, '254')) {
+                if (str_starts_with($phone, '0')) {
+                    $phone = '254' . substr($phone, 1);
+                } elseif (str_starts_with($phone, '+254')) {
+                    $phone = substr($phone, 1);
+                }
+            }
+
+            $timestamp = now()->format('YmdHis');
+            $password = base64_encode(env('MPESA_SHORTCODE') . env('MPESA_PASSKEY') . $timestamp);
+
+            $accessToken = $this->generateAccessToken();
+
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer ' . $this->generateAccessToken(),
+                'Authorization' => 'Bearer ' . $accessToken,
             ])->post('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', [
                 'BusinessShortCode' => env('MPESA_SHORTCODE'),
                 'Password' => $password,
@@ -86,15 +104,53 @@ class MpesaController extends Controller
                     'amount' => $amount,
                 ]);
 
+                // If this is an AJAX request, return JSON
+                if ($request->wantsJson() || $request->ajax()) {
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'M-Pesa STK Push initiated successfully. Please check your phone to complete the payment.',
+                        'checkout_request_id' => $responseData['CheckoutRequestID'],
+                        'payment_id' => $paymentId
+                    ]);
+                }
+
                 return redirect()->route('payment.status', $paymentId)
                     ->with('success', 'M-Pesa STK Push initiated. Please check your phone to complete the payment.');
             } else {
                 Log::error('M-Pesa STK Push Error: ' . json_encode($responseData));
                 $errorMessage = $responseData['errorMessage'] ?? $responseData['ResponseDescription'] ?? 'Unknown error.';
+                
+                if ($request->wantsJson() || $request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Failed to initiate M-Pesa STK Push: ' . $errorMessage
+                    ], 400);
+                }
+                
                 return back()->with('error', 'Failed to initiate M-Pesa STK Push: ' . $errorMessage);
             }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation Error: ', $e->errors());
+            
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $e->errors()
+                ], 422);
+            }
+            
+            return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
             Log::error('M-Pesa STK Push Exception: ' . $e->getMessage());
+            
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'An error occurred while initiating M-Pesa STK Push: ' . $e->getMessage()
+                ], 500);
+            }
+            
             return back()->with('error', 'An error occurred while initiating M-Pesa STK Push.');
         }
     }
