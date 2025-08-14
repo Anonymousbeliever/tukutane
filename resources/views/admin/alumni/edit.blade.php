@@ -5,81 +5,175 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-md mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm-rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <form method="POST" action="{{ route('admin.alumni.update', $user) }}" enctype="multipart/form-data">
-                        @csrf
-                        @method('PATCH')
+    <div class="py-6">
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="admin-card">
+                <div class="mb-4">
+                    <a href="{{ route('admin.alumni.index') }}" class="btn btn-secondary">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        Back to Alumni List
+                    </a>
+                </div>
 
-                        {{-- Profile Photo --}}
+                <form method="POST" action="{{ route('admin.alumni.update', $user->id) }}" enctype="multipart/form-data">
+                    @csrf
+                    @method('PATCH')
+
+                    {{-- Profile Photo --}}
+                    <div class="space-y-4">
                         <div>
-                            <x-input-label for="profile_photo" :value="__('Profile Photo')" />
+                            <label for="profile_photo" class="form-label">
+                                {{ __('Profile Photo') }}
+                            </label>
                             @if ($user->alumniProfile && $user->alumniProfile->profile_photo_path)
-                                <div class="mt-2">
-                                    <img src="{{ Storage::url($user->alumniProfile->profile_photo_path) }}" alt="Profile Photo" class="profile-photo-preview">
+                                <div class="mt-2 mb-3">
+                                    <img src="{{ Storage::url($user->alumniProfile->profile_photo_path) }}" 
+                                         alt="Profile Photo" 
+                                         class="profile-photo-preview">
                                 </div>
                             @endif
-                            <input id="profile_photo" name="profile_photo" type="file" class="mt-1 block w-full form-file-input" />
-                            <x-input-error class="mt-2" :messages="$errors->get('profile_photo')" />
+                            <input id="profile_photo" 
+                                   name="profile_photo" 
+                                   type="file" 
+                                   class="form-file-input"
+                                   accept="image/*" />
+                            @error('profile_photo')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <div class="mt-4">
-                            <x-input-label for="name" :value="__('Name')" />
-                            <x-text-input id="name" class="block mt-1 w-full form-input" type="text" name="name" :value="old('name', $user->name)" required autofocus />
-                            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                        <div>
+                            <label for="name" class="form-label">
+                                {{ __('Full Name') }} <span class="text-red-500">*</span>
+                            </label>
+                            <input id="name" 
+                                   class="form-input" 
+                                   type="text" 
+                                   name="name" 
+                                   value="{{ old('name', $user->name) }}" 
+                                   required 
+                                   autofocus />
+                            @error('name')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <div class="mt-4">
-                            <x-input-label for="email" :value="__('Email')" />
-                            <x-text-input id="email" class="block mt-1 w-full form-input" type="email" name="email" :value="old('email', $user->email)" required />
-                            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                        <div>
+                            <label for="email" class="form-label">
+                                {{ __('Email Address') }} <span class="text-red-500">*</span>
+                            </label>
+                            <input id="email" 
+                                   class="form-input" 
+                                   type="email" 
+                                   name="email" 
+                                   value="{{ old('email', $user->email) }}" 
+                                   required />
+                            @error('email')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <div class="mt-4">
-                            <x-input-label for="phone_number" :value="__('Phone Number')" />
-                            <x-text-input id="phone_number" class="block mt-1 w-full form-input" type="text" name="phone_number" :value="old('phone_number', $user->alumniProfile->phone_number ?? '')" />
-                            <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
+                        <div>
+                            <label for="phone_number" class="form-label">
+                                {{ __('Phone Number') }}
+                            </label>
+                            <input id="phone_number" 
+                                   class="form-input" 
+                                   type="text" 
+                                   name="phone_number" 
+                                   value="{{ old('phone_number', $user->alumniProfile->phone_number ?? '') }}" 
+                                   placeholder="e.g., +254712345678" />
+                            @error('phone_number')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <div class="mt-4">
-                            <x-input-label for="bio" :value="__('Bio')" />
-                            <textarea id="bio" name="bio" class="form-textarea mt-1 block w-full" rows="5">{{ old('bio', $user->alumniProfile->bio ?? '') }}</textarea>
-                            <x-input-error :messages="$errors->get('bio')" class="mt-2" />
+                        <div>
+                            <label for="bio" class="form-label">
+                                {{ __('Bio') }}
+                            </label>
+                            <textarea id="bio" 
+                                      name="bio" 
+                                      class="form-textarea" 
+                                      rows="4"
+                                      placeholder="Tell us about yourself...">{{ old('bio', $user->alumniProfile->bio ?? '') }}</textarea>
+                            @error('bio')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <div class="mt-4">
-                            <x-input-label for="linkedin_url" :value="__('LinkedIn URL')" />
-                            <x-text-input id="linkedin_url" class="block mt-1 w-full form-input" type="url" name="linkedin_url" :value="old('linkedin_url', $user->alumniProfile->linkedin_url ?? '')" />
-                            <x-input-error :messages="$errors->get('linkedin_url')" class="mt-2" />
+                        <div>
+                            <label for="linkedin_url" class="form-label">
+                                {{ __('LinkedIn URL') }}
+                            </label>
+                            <input id="linkedin_url" 
+                                   class="form-input" 
+                                   type="url" 
+                                   name="linkedin_url" 
+                                   value="{{ old('linkedin_url', $user->alumniProfile->linkedin_url ?? '') }}"
+                                   placeholder="https://linkedin.com/in/your-profile" />
+                            @error('linkedin_url')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <div class="mt-4">
-                            <x-input-label for="github_url" :value="__('GitHub URL')" />
-                            <x-text-input id="github_url" class="block mt-1 w-full form-input" type="url" name="github_url" :value="old('github_url', $user->alumniProfile->github_url ?? '')" />
-                            <x-input-error :messages="$errors->get('github_url')" class="mt-2" />
+                        <div>
+                            <label for="github_url" class="form-label">
+                                {{ __('GitHub URL') }}
+                            </label>
+                            <input id="github_url" 
+                                   class="form-input" 
+                                   type="url" 
+                                   name="github_url" 
+                                   value="{{ old('github_url', $user->alumniProfile->github_url ?? '') }}"
+                                   placeholder="https://github.com/your-username" />
+                            @error('github_url')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <div class="mt-4">
-                            <x-input-label for="current_company" :value="__('Current Company')" />
-                            <x-text-input id="current_company" class="block mt-1 w-full form-input" type="text" name="current_company" :value="old('current_company', $user->alumniProfile->current_company ?? '')" />
-                            <x-input-error :messages="$errors->get('current_company')" class="mt-2" />
+                        <div>
+                            <label for="current_company" class="form-label">
+                                {{ __('Current Company') }}
+                            </label>
+                            <input id="current_company" 
+                                   class="form-input" 
+                                   type="text" 
+                                   name="current_company" 
+                                   value="{{ old('current_company', $user->alumniProfile->current_company ?? '') }}"
+                                   placeholder="e.g., Google, Microsoft, Startup Inc." />
+                            @error('current_company')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <div class="mt-4">
-                            <x-input-label for="job_title" :value="__('Job Title')" />
-                            <x-text-input id="job_title" class="block mt-1 w-full form-input" type="text" name="job_title" :value="old('job_title', $user->alumniProfile->job_title ?? '')" />
-                            <x-input-error :messages="$errors->get('job_title')" class="mt-2" />
+                        <div>
+                            <label for="job_title" class="form-label">
+                                {{ __('Job Title') }}
+                            </label>
+                            <input id="job_title" 
+                                   class="form-input" 
+                                   type="text" 
+                                   name="job_title" 
+                                   value="{{ old('job_title', $user->alumniProfile->job_title ?? '') }}"
+                                   placeholder="e.g., Software Engineer, Product Manager" />
+                            @error('job_title')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <div class="flex-center justify-end mt-4">
-                            <x-primary-button class="ms-4 btn btn-primary">
+                        <div class="flex items-center justify-between space-x-4 pt-4">
+                            <a href="{{ route('admin.alumni.index') }}" class="btn btn-secondary">
+                                {{ __('Cancel') }}
+                            </a>
+                            <button type="submit" class="btn btn-primary">
                                 {{ __('Update Profile') }}
-                            </x-primary-button>
+                            </button>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

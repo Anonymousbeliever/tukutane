@@ -5,51 +5,76 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-md mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm-rounded-lg">
+    <div class="py-6">
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm rounded-lg">
                 <div class="p-6 text-gray-900">
                     <form method="POST" action="{{ route('admin.events.update', $event) }}">
                         @csrf
-                        @method('PATCH')
+                        @method('PUT')
 
-                        <div>
-                            <x-input-label for="title" :value="__('Event Title')" />
-                            <x-text-input id="title" class="block mt-1 w-full form-input" type="text" name="title" :value="old('title', $event->title)" required autofocus />
-                            <x-input-error :messages="$errors->get('title')" class="mt-2" />
+                        <!-- Title -->
+                        <div class="form-group">
+                            <label for="title" class="form-label">{{ __('Event Title') }}</label>
+                            <input id="title" class="form-input @error('title') border-red-500 @enderror" 
+                                   type="text" name="title" value="{{ old('title', $event->title) }}" 
+                                   required autofocus autocomplete="title">
+                            @error('title')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <div class="mt-4">
-                            <x-input-label for="description" :value="__('Description')" />
-                            <textarea id="description" name="description" class="form-textarea mt-1 block w-full" rows="5" required>{{ old('description', $event->description) }}</textarea>
-                            <x-input-error :messages="$errors->get('description')" class="mt-2" />
+                        <!-- Description -->
+                        <div class="form-group">
+                            <label for="description" class="form-label">{{ __('Description') }}</label>
+                            <textarea id="description" name="description" rows="4" 
+                                      class="form-textarea @error('description') border-red-500 @enderror" 
+                                      required>{{ old('description', $event->description) }}</textarea>
+                            @error('description')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <div class="mt-4">
-                            <x-input-label for="date" :value="__('Date and Time')" />
-                            <x-text-input id="date" class="block mt-1 w-full form-input" type="datetime-local" name="date" :value="old('date', $event->date->format('Y-m-d\TH:i'))" required />
-                            <x-input-error :messages="$errors->get('date')" class="mt-2" />
+                        <!-- Date and Time -->
+                        <div class="form-group">
+                            <label for="date" class="form-label">{{ __('Date and Time') }}</label>
+                            <input id="date" class="form-input @error('date') border-red-500 @enderror" 
+                                   type="datetime-local" name="date" 
+                                   value="{{ old('date', $event->date->format('Y-m-d\TH:i')) }}" required>
+                            @error('date')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <div class="mt-4">
-                            <x-input-label for="location" :value="__('Location')" />
-                            <x-text-input id="location" class="block mt-1 w-full form-input" type="text" name="location" :value="old('location', $event->location)" required />
-                            <x-input-error :messages="$errors->get('location')" class="mt-2" />
+                        <!-- Location -->
+                        <div class="form-group">
+                            <label for="location" class="form-label">{{ __('Location') }}</label>
+                            <input id="location" class="form-input @error('location') border-red-500 @enderror" 
+                                   type="text" name="location" value="{{ old('location', $event->location) }}" 
+                                   required autocomplete="location">
+                            @error('location')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <div class="mt-4">
-                            <x-input-label for="price" :value="__('Price (Ksh)')" />
-                            <x-text-input id="price" class="block mt-1 w-full form-input" type="number" name="price" :value="old('price', $event->price)" step="0.01" min="0" required />
-                            <x-input-error :messages="$errors->get('price')" class="mt-2" />
+                        <!-- Price -->
+                        <div class="form-group">
+                            <label for="price" class="form-label">{{ __('Price (KSh)') }}</label>
+                            <input id="price" class="form-input @error('price') border-red-500 @enderror" 
+                                   type="number" name="price" value="{{ old('price', $event->price) }}" 
+                                   min="0" step="0.01" required>
+                            @error('price')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="flex items-center justify-between mt-6">
                             <a href="{{ route('admin.events.index') }}" class="btn btn-secondary">
                                 {{ __('Cancel') }}
                             </a>
-                            <x-primary-button class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary">
                                 {{ __('Update Event') }}
-                            </x-primary-button>
+                            </button>
                         </div>
                     </form>
                 </div>

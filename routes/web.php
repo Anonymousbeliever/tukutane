@@ -49,21 +49,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view('events.show', compact('event'));
     })->name('events.show');
 
-    // Payments for Alumni
+    // Payments for Alumni (Option 2 — create record before form)
     Route::get('/payments/pay/{event?}', function (Event $event = null) {
         $payment = new Payment();
         $payment->amount = $event ? $event->price : 0;
         $payment->event_id = $event ? $event->id : null;
         $payment->type = $event ? 'event' : 'donation';
+        $payment->status = 'pending';
+        $payment->user_id = Auth::id();
+        $payment->save(); // Save so we have an ID for mpesa
 
         return view('payments.pay', compact('payment', 'event'));
     })->name('payments.pay');
 
+    // Initiate M-Pesa STK Push
     Route::post('/payments/mpesa-stk-push', [MpesaController::class, 'stkPush'])->name('mpesa.stk_push');
-    
+
     // Payment Status Route
     Route::get('/payments/{payment}/status', [MpesaController::class, 'paymentStatus'])->name('payment.status');
-    
+
     // Test Success Route (for local development only)
     Route::post('/payments/{payment}/test-success', function (Payment $payment) {
         $payment->update(['status' => 'completed']);
@@ -79,7 +83,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
         // Alumni Management
-        Route::resource('alumni', AdminAlumniController::class)->except(['show', 'create', 'store']);
+        Route::get('alumni', [AdminAlumniController::class, 'index'])->name('alumni.index');
         Route::get('alumni/{user}/edit', [AdminAlumniController::class, 'edit'])->name('alumni.edit');
         Route::patch('alumni/{user}', [AdminAlumniController::class, 'update'])->name('alumni.update');
         Route::delete('alumni/{user}', [AdminAlumniController::class, 'destroy'])->name('alumni.destroy');

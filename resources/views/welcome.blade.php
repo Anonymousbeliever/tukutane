@@ -31,14 +31,14 @@
             overflow-x: hidden;
         }
 
-        /* Enhanced Navigation */
+        /* Enhanced Navigation with Better Spacing */
         .navbar {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             z-index: 50;
-            padding: 1.5rem 0;
+            padding: 2rem 0;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -47,23 +47,32 @@
         .nav-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem;
+            padding: 0 3rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .logo {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 900;
             color: var(--primary);
             text-decoration: none;
-            letter-spacing: -0.025em;
+            letter-spacing: -0.05em;
+            font-family: 'Inter', system-ui, sans-serif;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .logo:hover {
+            color: var(--primary-dark);
+            transform: scale(1.02);
         }
 
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 3rem;
             align-items: center;
         }
 
@@ -71,20 +80,40 @@
             color: var(--gray-700);
             text-decoration: none;
             font-weight: 500;
+            font-size: 1rem;
             transition: color 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
         }
 
         .nav-link:hover {
             color: var(--primary);
         }
 
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: var(--primary);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             color: white;
-            padding: 0.75rem 1.5rem;
+            padding: 0.875rem 2rem;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 600;
+            font-size: 0.95rem;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
         }
@@ -92,6 +121,8 @@
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+            color: white;
+            text-decoration: none;
         }
 
         .mobile-menu-btn {
@@ -100,7 +131,14 @@
             border: none;
             cursor: pointer;
             color: var(--gray-700);
-            padding: 0.5rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-btn:hover {
+            background: var(--gray-100);
+            color: var(--primary);
         }
 
         .mobile-menu {
@@ -110,10 +148,11 @@
             left: 2rem;
             right: 2rem;
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-            padding: 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
             margin-top: 1rem;
+            border: 1px solid var(--gray-200);
         }
 
         .mobile-menu.show {
@@ -123,8 +162,18 @@
         .mobile-menu .nav-link,
         .mobile-menu .btn-primary {
             display: block;
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
             text-align: center;
+            padding: 0.75rem;
+        }
+
+        .mobile-menu .nav-link {
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .mobile-menu .nav-link:hover {
+            background: var(--gray-50);
         }
 
         /* Hero Section */
@@ -135,7 +184,7 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 8rem 2rem 4rem;
+            padding: 10rem 2rem 4rem;
             position: relative;
             overflow: hidden;
         }
@@ -506,12 +555,25 @@
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
+            .nav-container {
+                padding: 0 2rem;
+            }
+
+            .logo {
+                font-size: 2rem;
+                letter-spacing: -0.025em;
+            }
+
             .nav-links {
                 display: none;
             }
 
             .mobile-menu-btn {
                 display: block;
+            }
+
+            .hero {
+                padding: 8rem 2rem 4rem;
             }
 
             .hero h1 {
@@ -541,6 +603,26 @@
             }
         }
 
+        @media (max-width: 480px) {
+            .nav-container {
+                padding: 0 1.5rem;
+            }
+
+            .logo {
+                font-size: 1.75rem;
+            }
+
+            .navbar {
+                padding: 1.5rem 0;
+            }
+
+            .mobile-menu {
+                left: 1rem;
+                right: 1rem;
+                padding: 1.5rem;
+            }
+        }
+
         /* Animations */
         @keyframes fadeInUp {
             from {
@@ -564,6 +646,17 @@
 
         .feature-card:nth-child(3) {
             animation-delay: 0.2s;
+        }
+
+        /* Navbar scroll effect */
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.98) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+            padding: 1rem 0 !important;
+        }
+
+        .navbar.scrolled .logo {
+            font-size: 2rem;
         }
     </style>
 
@@ -806,7 +899,7 @@
                     <h4>Contact Us</h4>
                     <ul>
                         <li>Email: info@tukutane.com</li>
-                        <li>Phone: +254 7XX XXX XXX</li>
+                        <li>Phone: +254 706 128 329</li>
                         <li>Address: Institute of Software Technologies</li>
                         <li>Nairobi, Kenya</li>
                     </ul>
@@ -814,7 +907,7 @@
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; {{ date('Y') }} Tukutane. All rights reserved. Built with ❤️ for IST Alumni.</p>
+                <p>&copy; {{ date('Y') }} Tukutane. All rights reserved. Built with love for IST Alumni.</p>
             </div>
         </div>
     </footer>
@@ -865,11 +958,9 @@
         window.addEventListener('scroll', function() {
             const navbar = document.querySelector('.navbar');
             if (window.scrollY > 100) {
-                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
-                navbar.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.1)';
+                navbar.classList.add('scrolled');
             } else {
-                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
-                navbar.style.boxShadow = 'none';
+                navbar.classList.remove('scrolled');
             }
         });
     </script>
